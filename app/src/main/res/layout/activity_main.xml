@@ -21,4 +21,11 @@
         android:text="LineLayout Activity"
         android:id="@+id/line_layout_start_btn" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="蒙层Activity"
+        android:id="@+id/floating_view_start_btn" />
+
 </LinearLayout>

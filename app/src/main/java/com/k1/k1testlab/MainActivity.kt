@@ -3,6 +3,7 @@ package com.k1.k1testlab
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.k1.k1testlab.page.FillBlankActivity
+import com.k1.k1testlab.page.FloatingViewActivity
 import com.k1.k1testlab.page.LineLayoutTestActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -21,6 +22,10 @@ class MainActivity : AppCompatActivity() {
 
         line_layout_start_btn.setOnClickListener {
             LineLayoutTestActivity.start(this)
+        }
+
+        floating_view_start_btn.setOnClickListener {
+            FloatingViewActivity.start(this)
         }
     }
 }
