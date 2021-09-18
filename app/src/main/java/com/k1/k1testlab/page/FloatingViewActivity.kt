@@ -2,11 +2,8 @@ package com.k1.k1testlab.page
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import com.k1.common.dp
 import com.k1.common.widget.FloatingView
 import com.k1.k1testlab.R
@@ -20,6 +17,8 @@ class FloatingViewActivity : AppCompatActivity() {
         }
     }
 
+    private lateinit var floatingView: FloatingView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_floating_view)
@@ -28,13 +27,18 @@ class FloatingViewActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        val floatingView = FloatingView(this)
+        initViews()
 
-        floating_view_main.addView(floatingView)
-
+        floatingView.show()
         floatingView.addHighlightItem(FloatingView.HighlightItem(offsetLeft = 10.dp, view = floating_view_highlight))
         floatingView.addHighlightItem(FloatingView.HighlightItem(view = floating_view_highlight2))
+        floatingView.setOnClickListener {
+            floatingView.dismiss()
+        }
     }
 
+    private fun initViews() {
+        floatingView = FloatingView.build(this, floating_view_main)
+    }
 
 }

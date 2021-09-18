@@ -3,16 +3,23 @@ package com.k1.common.widget
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.GradientDrawable
-import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
+import androidx.core.view.isVisible
 
-class FloatingView @JvmOverloads constructor(
+class FloatingView private constructor(
     context: Context,
-    attrs: AttributeSet? = null,
-    defStyle: Int = 0
-): FrameLayout(context, attrs, defStyle) {
+): FrameLayout(context) {
+
+    companion object {
+        fun build(context: Context, parentView: ViewGroup): FloatingView {
+            return FloatingView(context).apply {
+                parentView.addView(this)
+            }
+        }
+    }
 
     // region init
     private val highlightItems = ArrayList<HighlightItem>()
@@ -32,6 +39,7 @@ class FloatingView @JvmOverloads constructor(
     init {
         layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
         setWillNotDraw(false) // 默认是true
+        isVisible = false
     }
     // endregion init
 
@@ -47,6 +55,14 @@ class FloatingView @JvmOverloads constructor(
     fun clear() {
         highlightItems.clear()
         postInvalidate()
+    }
+
+    fun show() {
+        isVisible = true
+    }
+
+    fun dismiss() {
+        isVisible = false
     }
     // endregion public method
 
