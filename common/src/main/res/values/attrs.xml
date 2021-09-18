@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LineLayout">
+        <attr name="linePadding" format="dimension" />
+        <attr name="lineItemPadding" format="dimension" />
+        <attr name="orientation" format="enum">
+            <enum value="0" name="horizontal" />
+            <enum value="1" name="vertical" />
+        </attr>
+    </declare-styleable>
+</resources>
