@@ -6,7 +6,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".page.FloatingViewActivity"
-    android:background="@drawable/round_bg">
+    tools:context=".page.FloatingViewActivity">
+
+    <View
+        android:id="@+id/floating_view_highlight"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:background="@color/teal_200"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,7 @@ import android.graphics.drawable.GradientDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.k1.common.widget.FloatingView
 import com.k1.k1testlab.R
 import kotlinx.android.synthetic.main.activity_floating_view.*
 
@@ -26,35 +27,13 @@ class FloatingViewActivity : AppCompatActivity() {
     }
 
     private fun init() {
-        drawGradientHollow(floating_view_main.background)
+        val floatingView = FloatingView(this)
+
+        floating_view_main.addView(floatingView)
+
+        floatingView.addHighlightItem(FloatingView.HighlightItem(view = floating_view_highlight))
+
     }
 
-    private fun drawGradientHollow(drawable: Drawable) {
-        if (drawable !is GradientDrawable) return
 
-        var shape: Int = GradientDrawable.RECTANGLE
-        var radii: FloatArray? = null
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            radii = drawable.cornerRadii
-            shape = drawable.shape
-        } else {
-            try {
-                val fieldGradientState = Class.forName("android.graphics.drawable.GradientDrawable").getDeclaredField("mGradientState")
-                fieldGradientState.isAccessible = true
-                val gradientState = fieldGradientState.get(drawable)
-
-                val fieldShape = gradientState.javaClass.getDeclaredField("mShape")
-                shape = fieldShape.get(gradientState) as? Int ?: GradientDrawable.RECTANGLE
-
-                val fieldRadiusArray = gradientState.javaClass.getDeclaredField("mRadiusArray")
-                radii = fieldRadiusArray.get(gradientState) as? FloatArray
-
-            } catch (ignore: Throwable) {
-
-            }
-        }
-
-        Log.d("k1", "radii: ${radii.toString()}")
-        Log.d("k1", "shape: ${shape.toString()}")
-    }
 }
