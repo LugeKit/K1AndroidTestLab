@@ -25,3 +25,9 @@ inline val Float.spf
 
 inline val Float.sp
     get() = this.spf.toInt()
+
+inline val Float.px: Int
+    get() = (this / BaseApplication.instance.resources.displayMetrics.density + 0.5f).toInt()
+
+inline val Int.px
+    get() = this.toFloat().px
