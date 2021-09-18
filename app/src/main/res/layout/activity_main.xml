@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -13,17 +14,11 @@
         android:text="补白activity"
         android:id="@+id/fill_blank_start_btn" />
 
-    <com.k1.common.widget.LineLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <View
-            android:layout_width="400dp"
-            android:layout_height="200dp"
-            android:background="@color/black" />
-        <View
-            android:layout_width="300dp"
-            android:layout_height="100dp"
-            android:background="@color/purple_200" />
-    </com.k1.common.widget.LineLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="LineLayout Activity"
+        android:id="@+id/line_layout_start_btn" />
 
 </LinearLayout>

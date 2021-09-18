@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.K1TestLab">
         <activity
+            android:name=".page.LineLayoutTestActivity"
+            android:exported="true" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
