@@ -19,8 +19,8 @@ class FloatingView @JvmOverloads constructor(
 
     private val highlightPaint = Paint().apply {
         isAntiAlias = true
-        color = Color.WHITE
-        xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OUT)
+        color = Color.TRANSPARENT
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
     }
 
     private val backgroundColor = "#88000000"
@@ -36,6 +36,9 @@ class FloatingView @JvmOverloads constructor(
     // endregion init
 
     // region public method
+    /**
+     * 添加高亮的view
+     */
     fun addHighlightItem(item: HighlightItem) {
         highlightItems.add(item)
         postInvalidate()
@@ -96,8 +99,8 @@ class FloatingView @JvmOverloads constructor(
 
         val l = viewLocation[0] - item.offsetLeft
         val t = viewLocation[1] - item.offsetTop
-        val r = l + rect.right + item.offsetRight
-        val b = t + rect.bottom + item.offsetBottom
+        val r = viewLocation[0] + rect.right + item.offsetRight
+        val b = viewLocation[1] + rect.bottom + item.offsetBottom
 
         rect.apply {
             left = l
@@ -148,6 +151,9 @@ class FloatingView @JvmOverloads constructor(
     // endregion draw highlight
     // endregion draw
 
+    /**
+     * @param offset in pixel
+     */
     class HighlightItem(
         var offsetLeft: Int = 0,
         var offsetTop: Int = 0,

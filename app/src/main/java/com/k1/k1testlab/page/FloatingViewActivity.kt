@@ -7,6 +7,7 @@ import android.graphics.drawable.GradientDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.k1.common.dp
 import com.k1.common.widget.FloatingView
 import com.k1.k1testlab.R
 import kotlinx.android.synthetic.main.activity_floating_view.*
@@ -31,8 +32,8 @@ class FloatingViewActivity : AppCompatActivity() {
 
         floating_view_main.addView(floatingView)
 
-        floatingView.addHighlightItem(FloatingView.HighlightItem(view = floating_view_highlight))
-
+        floatingView.addHighlightItem(FloatingView.HighlightItem(offsetLeft = 10.dp, view = floating_view_highlight))
+        floatingView.addHighlightItem(FloatingView.HighlightItem(view = floating_view_highlight2))
     }
 
 
