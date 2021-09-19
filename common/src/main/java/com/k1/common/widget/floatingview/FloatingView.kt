@@ -2,6 +2,7 @@ package com.k1.common.widget.floatingview
 
 import android.content.Context
 import android.graphics.*
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -33,7 +34,7 @@ class FloatingView private constructor(
         xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
     }
 
-    private val backgroundColor = "#88000000"
+    private val backgroundColor = "#FF000000"
     var highlightDrawer: IHighlightDrawer = DefaultHighlightDrawer(this)
 
     init {
@@ -127,6 +128,7 @@ class FloatingView private constructor(
     }
     // endregion draw
 
+    // region relative class
     /**
      * @param highlightView 需要被高亮的view
      * @param targetShape 想要绘制的高亮形状，默认为Default，即根据highlightView的background绘制，可以设置该参数的paddings值，从而更改高亮的区域(添加高亮padding)
@@ -140,7 +142,7 @@ class FloatingView private constructor(
         sealed class Shape(val paddings: Paddings) {
             class Default(paddings: Paddings = Paddings()): Shape(paddings)
             class Rectangle(paddings: Paddings = Paddings(), val radii: FloatArray = FloatArray(8) { 0f }): Shape(paddings)
-            class Oval(paddings: Paddings = Paddings(), val radX: Float = 0f, val radY: Float = 0f): Shape(paddings)
+            class Oval(paddings: Paddings = Paddings()): Shape(paddings)
 
             fun setPaddings(l: Int = 0, t: Int = 0, r: Int = 0, b: Int = 0) {
                 paddings.apply {
@@ -196,5 +198,6 @@ class FloatingView private constructor(
          */
         fun drawHighlight(canvas: Canvas, item: HighlightItem)
     }
+    // endregion relative class
 
 }
