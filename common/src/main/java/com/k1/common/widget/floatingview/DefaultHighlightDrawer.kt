@@ -44,7 +44,7 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
 
         when (item.targetShape) {
             is FloatingView.HighlightItem.Shape.Default -> {
-                // Default情况 可以处理Drawable, GradientDrawable(shape in xml), StateDrawable(selector in xml, get first as GradientDrawable)
+                // Default情况 可以处理Drawable, GradientDrawable(shape in xml), StateDrawable(selector in xml, get current one as GradientDrawable)
 
                 val background: GradientDrawable? = when (val drawable = item.highlightView.background) {
                     is GradientDrawable -> { drawable }
