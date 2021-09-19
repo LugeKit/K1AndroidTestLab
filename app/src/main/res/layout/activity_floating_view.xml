@@ -10,7 +10,7 @@
 
     <View
         android:id="@+id/floating_view_highlight"
-        android:layout_width="300dp"
+        android:layout_width="200dp"
         android:layout_height="300dp"
         android:background="@drawable/round_bg"
         app:layout_constraintLeft_toLeftOf="parent"

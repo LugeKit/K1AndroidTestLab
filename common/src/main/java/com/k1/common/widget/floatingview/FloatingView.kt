@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionPosition.Companion.LEFT_BOTTOM
+import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionPosition.Companion.LEFT_TOP
+import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionPosition.Companion.RIGHT_BOTTOM
+import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionPosition.Companion.RIGHT_TOP
 
 class FloatingView private constructor(
     context: Context,
@@ -72,7 +75,31 @@ class FloatingView private constructor(
         for (item in highlightItems) {
             item.companionView?.also {
                 val area = highlightDrawer.getHighlightArea(item)
-                it.layout(area[2], area[1], area[2] + it.measuredWidth, area[1] + it.measuredHeight)
+
+                var cl = 0
+                var ct = 0
+                when (item.companionPosition.position) {
+                    LEFT_TOP -> {
+                        cl = area[0]
+                        ct = area[1]
+                    }
+                    RIGHT_TOP -> {
+                        cl = area[2]
+                        ct = area[1]
+                    }
+                    RIGHT_BOTTOM -> {
+                        cl = area[2]
+                        ct = area[3]
+                    }
+                    LEFT_BOTTOM -> {
+                        cl = area[0]
+                        ct = area[3]
+                    }
+                }
+                cl += item.companionPosition.offsetX
+                ct += item.companionPosition.offsetY
+
+                it.layout(cl, ct, cl + it.measuredWidth, ct + it.measuredHeight)
             }
         }
     }
@@ -101,12 +128,13 @@ class FloatingView private constructor(
      */
     class HighlightItem(
         val highlightView: View? = null,
+        val targetShape: Shape = Shape.Default(),
         val companionView: View? = null,
-        val targetShape: Shape = Shape.Default()
+        val companionPosition: CompanionPosition = CompanionPosition(RIGHT_TOP)
     ) {
         sealed class Shape(val paddings: Paddings) {
             class Default(paddings: Paddings = Paddings()): Shape(paddings)
-            class Rectangle(paddings: Paddings = Paddings()): Shape(paddings)
+            class Rectangle(paddings: Paddings = Paddings(), val radii: FloatArray = FloatArray(8) { 0f }): Shape(paddings)
             class Oval(paddings: Paddings = Paddings(), val radX: Float = 0f, val radY: Float = 0f): Shape(paddings)
 
             fun setPaddings(l: Int = 0, t: Int = 0, r: Int = 0, b: Int = 0) {
@@ -125,6 +153,19 @@ class FloatingView private constructor(
                     right += r
                     bottom += b
                 }
+            }
+        }
+
+        /**
+         * @param offsetX in px, positive->move right
+         * @param offsetY in px, positive->move down
+         */
+        class CompanionPosition(val position: Int, val offsetX: Int = 0, val offsetY: Int = 0) {
+            companion object {
+                const val LEFT_TOP = 0
+                const val RIGHT_TOP = 1
+                const val RIGHT_BOTTOM = 2
+                const val LEFT_BOTTOM = 3
             }
         }
 

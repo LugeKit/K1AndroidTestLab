@@ -2,6 +2,8 @@ package com.k1.common.widget.floatingview
 
 import android.graphics.*
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.StateListDrawable
 import android.view.View
 
 class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.IHighlightDrawer {
@@ -42,20 +44,22 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
 
         when (item.targetShape) {
             is FloatingView.HighlightItem.Shape.Default -> {
-                val background = item.highlightView.background as? GradientDrawable
-                if (background != null) {
-                    val shape = getDrawableShape(background)
-                    val radii = getDrawableRadii(background)
+                // Default情况 可以处理Drawable, GradientDrawable(shape in xml), StateDrawable(selector in xml, get first as GradientDrawable)
 
-                    when (shape) {
-                        GradientDrawable.RECTANGLE -> {
-                            drawRectHighlight(canvas, item, radii)
-                        }
+                val background: GradientDrawable? = when (val drawable = item.highlightView.background) {
+                    is GradientDrawable -> { drawable }
+                    is StateListDrawable -> { drawable.current as? GradientDrawable }
+                    else -> null
+                }
+                if (background != null) {
+                    when (getDrawableShape(background)) {
                         GradientDrawable.OVAL -> {
                             drawOvalHighlight(canvas, item)
                         }
                         else -> {
-                            // todo@k1 画其他的情况
+                            // 其他的情况 都退化成矩形直接画即可
+                            val radii = getDrawableRadii(background)
+                            drawRectHighlight(canvas, item, radii)
                         }
                     }
                 } else {
@@ -63,7 +67,7 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
                 }
             }
             is FloatingView.HighlightItem.Shape.Rectangle -> {
-                drawRectHighlight(canvas, item)
+                drawRectHighlight(canvas, item, item.targetShape.radii)
             }
             is FloatingView.HighlightItem.Shape.Oval -> {
                 drawOvalHighlight(canvas, item)
