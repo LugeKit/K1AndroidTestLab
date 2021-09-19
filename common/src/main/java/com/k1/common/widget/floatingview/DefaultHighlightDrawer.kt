@@ -51,6 +51,9 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
                         GradientDrawable.RECTANGLE -> {
                             drawRectHighlight(canvas, item, radii)
                         }
+                        GradientDrawable.OVAL -> {
+                            drawOvalHighlight(canvas, item)
+                        }
                         else -> {
                             // todo@k1 画其他的情况
                         }
@@ -63,7 +66,7 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
                 drawRectHighlight(canvas, item)
             }
             is FloatingView.HighlightItem.Shape.Oval -> {
-                // todo@k1 椭圆的情况
+                drawOvalHighlight(canvas, item)
             }
         }
     }
@@ -93,10 +96,20 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
     }
 
     /**
-     * todo@k1 画椭圆形
+     * 画椭圆形
      */
     private fun drawOvalHighlight(canvas: Canvas, item: FloatingView.HighlightItem) {
+        if (item.highlightView == null) return
 
+        getHighlightArea(item).apply {
+            rect.left = get(0)
+            rect.top = get(1)
+            rect.right = get(2)
+            rect.bottom = get(3)
+        }
+
+        rectF.set(rect)
+        canvas.drawOval(rectF, highlightPaint)
     }
 
     /**
@@ -124,7 +137,9 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
      */
     private fun getDrawableRadii(drawable: GradientDrawable): FloatArray? {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            return drawable.cornerRadii
+            try {
+                return drawable.cornerRadii
+            } catch (ignore: Throwable) { }
         } else {
             try {
                 val fieldGradientState = Class.forName("android.graphics.drawable.GradientDrawable").getDeclaredField("mGradientState")
@@ -134,10 +149,9 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
                 val fieldRadiusArray = gradientState.javaClass.getDeclaredField("mRadiusArray")
                 return fieldRadiusArray.get(gradientState) as? FloatArray
 
-            } catch (ignore: Throwable) {
-
-            }
-            return null
+            } catch (ignore: Throwable) { }
         }
+
+        return null
     }
 }
