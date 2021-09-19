@@ -54,6 +54,7 @@ class FloatingView private constructor(
 
     fun clear() {
         highlightItems.clear()
+        removeAllViews()
         postInvalidate()
     }
 
@@ -66,6 +67,7 @@ class FloatingView private constructor(
     }
     // endregion public method
 
+    // region layout
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         for (item in highlightItems) {
             item.companionView?.also {

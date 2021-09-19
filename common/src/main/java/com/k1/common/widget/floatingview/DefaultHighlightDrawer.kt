@@ -100,28 +100,6 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
     }
 
     /**
-     * 获取需要高亮的范围
-     */
-    private fun calculateAndSetHighlightArea(item: FloatingView.HighlightItem) {
-        if (item.highlightView == null) return
-
-        item.highlightView.getDrawingRect(rect)
-        item.highlightView.getLocationInWindow(location)
-
-        val l = location[0] - item.targetShape.paddings.left
-        val t = location[1] - item.targetShape.paddings.top
-        val r = location[0] + rect.right + item.targetShape.paddings.right
-        val b = location[1] + rect.bottom + item.targetShape.paddings.bottom
-
-        rect.apply {
-            left = l
-            top = t
-            right = r
-            bottom = b
-        }
-    }
-
-    /**
      * 获取drawable的shape信息
      */
     private fun getDrawableShape(drawable: GradientDrawable): Int {
