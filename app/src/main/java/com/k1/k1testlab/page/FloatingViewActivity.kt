@@ -2,15 +2,10 @@ package com.k1.k1testlab.page
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
-import com.k1.common.dp
 import com.k1.common.widget.floatingview.FloatingView
-import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionPosition.Companion.LEFT_TOP
-import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionPosition.Companion.RIGHT_BOTTOM
+import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.RIGHT_TOP
 import com.k1.k1testlab.R
 import kotlinx.android.synthetic.main.activity_floating_view.*
 
@@ -42,11 +37,13 @@ class FloatingViewActivity : AppCompatActivity() {
 
         floatingView.show()
         val companionView = layoutInflater.inflate(R.layout.item_companion_view, floating_view_main, false)
-        floatingView.addHighlightItem(FloatingView.HighlightItem(
+        val highlightItem1 = FloatingView.HighlightItem(
             highlightView = floating_view_highlight,
-            companionView = companionView,
-            companionPosition = FloatingView.HighlightItem.CompanionPosition(LEFT_TOP)
-        ))
+            companionItems = listOf(
+                FloatingView.HighlightItem.CompanionItem(companionView, FloatingView.HighlightItem.CompanionItem.CompanionPosition(RIGHT_TOP))
+            )
+        )
+        floatingView.addHighlightItem(highlightItem1)
         floatingView.addHighlightItem(FloatingView.HighlightItem(highlightView = floating_view_highlight2))
         floatingView.setOnClickListener {
             floatingView.dismiss()

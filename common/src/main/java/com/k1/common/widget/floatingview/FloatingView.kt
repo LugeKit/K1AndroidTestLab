@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
-import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionPosition.Companion.LEFT_BOTTOM
-import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionPosition.Companion.LEFT_TOP
-import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionPosition.Companion.RIGHT_BOTTOM
-import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionPosition.Companion.RIGHT_TOP
+import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.LEFT_BOTTOM
+import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.LEFT_TOP
+import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.RIGHT_BOTTOM
+import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.RIGHT_TOP
 
 class FloatingView private constructor(
     context: Context,
@@ -49,8 +49,8 @@ class FloatingView private constructor(
      */
     fun addHighlightItem(item: HighlightItem) {
         highlightItems.add(item)
-        if (item.companionView != null) {
-            addView(item.companionView)
+        for (companionItem in item.companionItems) {
+            addView(companionItem.view)
         }
         postInvalidate()
     }
@@ -73,12 +73,14 @@ class FloatingView private constructor(
     // region layout
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         for (item in highlightItems) {
-            item.companionView?.also {
-                val area = highlightDrawer.getHighlightArea(item)
+            val area = highlightDrawer.getHighlightArea(item)
+            for (companionItem in item.companionItems) {
+                val cView = companionItem.view
+                if (cView.parent != this) continue // 没add进去 理论上需要throw
 
                 var cl = 0
                 var ct = 0
-                when (item.companionPosition.position) {
+                when (companionItem.companionPosition.position) {
                     LEFT_TOP -> {
                         cl = area[0]
                         ct = area[1]
@@ -96,10 +98,12 @@ class FloatingView private constructor(
                         ct = area[3]
                     }
                 }
-                cl += item.companionPosition.offsetX
-                ct += item.companionPosition.offsetY
+                cl += companionItem.companionPosition.offsetX
+                ct += companionItem.companionPosition.offsetY
 
-                it.layout(cl, ct, cl + it.measuredWidth, ct + it.measuredHeight)
+                cView.apply {
+                    layout(cl, ct, cl + measuredWidth, ct + measuredHeight)
+                }
             }
         }
     }
@@ -129,8 +133,7 @@ class FloatingView private constructor(
     class HighlightItem(
         val highlightView: View? = null,
         val targetShape: Shape = Shape.Default(),
-        val companionView: View? = null,
-        val companionPosition: CompanionPosition = CompanionPosition(RIGHT_TOP)
+        val companionItems: List<CompanionItem> = arrayListOf(),
     ) {
         sealed class Shape(val paddings: Paddings) {
             class Default(paddings: Paddings = Paddings()): Shape(paddings)
@@ -156,16 +159,18 @@ class FloatingView private constructor(
             }
         }
 
-        /**
-         * @param offsetX in px, positive->move right
-         * @param offsetY in px, positive->move down
-         */
-        class CompanionPosition(val position: Int, val offsetX: Int = 0, val offsetY: Int = 0) {
-            companion object {
-                const val LEFT_TOP = 0
-                const val RIGHT_TOP = 1
-                const val RIGHT_BOTTOM = 2
-                const val LEFT_BOTTOM = 3
+        class CompanionItem(val view: View, val companionPosition: CompanionPosition) {
+            /**
+             * @param offsetX in px, positive->move right
+             * @param offsetY in px, positive->move down
+             */
+            class CompanionPosition(val position: Int, val offsetX: Int = 0, val offsetY: Int = 0) {
+                companion object {
+                    const val LEFT_TOP = 0
+                    const val RIGHT_TOP = 1
+                    const val RIGHT_BOTTOM = 2
+                    const val LEFT_BOTTOM = 3
+                }
             }
         }
 
