@@ -28,8 +28,6 @@ class FloatingViewActivity : AppCompatActivity() {
 
     private fun init() {
         initViews()
-
-
     }
 
     private fun initViews() {

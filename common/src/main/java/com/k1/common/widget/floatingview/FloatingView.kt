@@ -128,7 +128,9 @@ class FloatingView private constructor(
     // endregion draw
 
     /**
-     * @param padding in pixel
+     * @param highlightView 需要被高亮的view
+     * @param targetShape 想要绘制的高亮形状，默认为Default，即根据highlightView的background绘制，可以设置该参数的paddings值，从而更改高亮的区域(添加高亮padding)
+     * @param companionItems 一个列表，包含了附着在高亮view上的其他view的信息，绘制在蒙层上(例如指引图)
      */
     class HighlightItem(
         val highlightView: View? = null,
@@ -184,10 +186,14 @@ class FloatingView private constructor(
 
     interface IHighlightDrawer {
         /**
+         * 获取高亮view的高亮范围，返回的是相对于FloatingView的位置，计算了padding后的值
          * @return An IntArray(4) to describe the bounds of highlight view. 0->left, 1->top, 2->right, 3->bottom
          */
         fun getHighlightArea(item: HighlightItem): IntArray
 
+        /**
+         * 绘制高亮区域的规则，实现参考DefaultHighlightDrawer
+         */
         fun drawHighlight(canvas: Canvas, item: HighlightItem)
     }
 
