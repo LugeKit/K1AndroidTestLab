@@ -12,7 +12,7 @@
         android:id="@+id/floating_view_highlight"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:background="@color/teal_200"
+        android:background="@drawable/round_bg"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"

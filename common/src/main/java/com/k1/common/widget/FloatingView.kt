@@ -33,7 +33,7 @@ class FloatingView private constructor(
     private val backgroundColor = "#88000000"
     private val rect = Rect()
     private val rectF = RectF()
-    private val viewLocation = IntArray(2)
+    private val path = Path()
     private val location = IntArray(2)
 
     init {
@@ -68,7 +68,7 @@ class FloatingView private constructor(
 
     // region draw
     override fun onDraw(canvas: Canvas) {
-        // 设置一层layer, 最底色为透明色, DST_OUT相交部分就会变成透明
+        // 设置一层layer, 最底色为透明色, SRC覆盖后就会显示出下面一层view的颜色
         val count = canvas.saveLayer(0f, 0f, width.toFloat(), height.toFloat(), null)
 
         // 画出透明底色
@@ -87,36 +87,50 @@ class FloatingView private constructor(
         if (item.view == null) return
 
         val background = item.view.background as? GradientDrawable
-        if (background == null) {
-            // 画一个简单的矩形即可
-            drawSimpleRectHighlight(canvas, item)
-        } else {
+        if (background != null) {
             val shape = getDrawableShape(background)
             val radii = getDrawableRadii(background)
 
-            if (radii != null && radii.any { !equals(0f) }) {
-                // 有圆角 需要画圆角
-            } else {
-                // 退化到画矩形
-                drawSimpleRectHighlight(canvas, item)
+            when (shape) {
+                GradientDrawable.RECTANGLE -> {
+                    drawRectHighlight(canvas, item, radii)
+                }
             }
+        } else {
+            drawRectHighlight(canvas, item)
         }
     }
 
-    private fun drawSimpleRectHighlight(canvas: Canvas, item: HighlightItem) {
+    private fun drawRectHighlight(canvas: Canvas, item: HighlightItem, radii: FloatArray? = null) {
         if (item.view == null) return
 
         canvas.save()
         getLocationInWindow(location)
         canvas.translate(-location[0].toFloat(), -location[1].toFloat())
+        calculateAndSetHighlightArea(item)
 
-        item.view.getDrawingRect(rect) // 获取绘制的边框
-        item.view.getLocationInWindow(viewLocation) // 获取在window中的位置，自动适应status bar
+        if (radii != null && radii.any { !equals(0f) }) {
+            path.reset()
+            rectF.set(rect)
+            path.addRoundRect(rectF, radii, Path.Direction.CW)
+            canvas.drawPath(path, highlightPaint)
+        } else {
+            canvas.drawRect(rect, highlightPaint)
+        }
 
-        val l = viewLocation[0] - item.offsetLeft
-        val t = viewLocation[1] - item.offsetTop
-        val r = viewLocation[0] + rect.right + item.offsetRight
-        val b = viewLocation[1] + rect.bottom + item.offsetBottom
+        canvas.restore()
+    }
+
+    private fun calculateAndSetHighlightArea(item: HighlightItem) {
+        if (item.view == null) return
+
+        item.view.getDrawingRect(rect)
+        item.view.getLocationInWindow(location)
+
+        val l = location[0] - item.paddingLeft
+        val t = location[1] - item.paddingTop
+        val r = location[0] + rect.right + item.paddingRight
+        val b = location[1] + rect.bottom + item.paddingBottom
 
         rect.apply {
             left = l
@@ -124,9 +138,6 @@ class FloatingView private constructor(
             right = r
             bottom = b
         }
-
-        canvas.drawRect(rect, highlightPaint)
-        canvas.restore()
     }
 
     private fun getDrawableShape(drawable: GradientDrawable): Int {
@@ -168,13 +179,13 @@ class FloatingView private constructor(
     // endregion draw
 
     /**
-     * @param offset in pixel
+     * @param padding in pixel
      */
     class HighlightItem(
-        var offsetLeft: Int = 0,
-        var offsetTop: Int = 0,
-        var offsetRight: Int = 0,
-        var offsetBottom: Int = 0,
+        var paddingLeft: Int = 0,
+        var paddingTop: Int = 0,
+        var paddingRight: Int = 0,
+        var paddingBottom: Int = 0,
         val view: View? = null,
     )
 

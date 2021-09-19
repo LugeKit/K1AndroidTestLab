@@ -29,16 +29,24 @@ class FloatingViewActivity : AppCompatActivity() {
     private fun init() {
         initViews()
 
-        floatingView.show()
-        floatingView.addHighlightItem(FloatingView.HighlightItem(offsetLeft = 10.dp, view = floating_view_highlight))
-        floatingView.addHighlightItem(FloatingView.HighlightItem(view = floating_view_highlight2))
-        floatingView.setOnClickListener {
-            floatingView.dismiss()
-        }
+
     }
 
     private fun initViews() {
         floatingView = FloatingView.build(this, floating_view_main)
+
+        floatingView.show()
+        floatingView.addHighlightItem(FloatingView.HighlightItem(
+            paddingLeft = 10.dp,
+            paddingTop = 10.dp,
+            paddingRight = 10.dp,
+            paddingBottom = 10.dp,
+            view = floating_view_highlight
+        ))
+        floatingView.addHighlightItem(FloatingView.HighlightItem(view = floating_view_highlight2))
+        floatingView.setOnClickListener {
+            floatingView.dismiss()
+        }
     }
 
 }
