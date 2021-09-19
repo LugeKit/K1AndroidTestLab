@@ -83,10 +83,7 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
         if (item.highlightView == null) return
 
         getHighlightArea(item).apply {
-            rect.left = get(0)
-            rect.top = get(1)
-            rect.right = get(2)
-            rect.bottom = get(3)
+            rect.set(get(0), get(1), get(2), get(3))
         }
 
         if (radii != null && radii.any { !equals(0f) }) {
@@ -106,10 +103,7 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
         if (item.highlightView == null) return
 
         getHighlightArea(item).apply {
-            rect.left = get(0)
-            rect.top = get(1)
-            rect.right = get(2)
-            rect.bottom = get(3)
+            rect.set(get(0), get(1), get(2), get(3))
         }
 
         rectF.set(rect)
