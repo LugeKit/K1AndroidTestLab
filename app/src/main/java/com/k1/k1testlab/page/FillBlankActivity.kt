@@ -5,10 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.k1.k1testlab.BaseActivity
 import com.k1.k1testlab.R
 import kotlinx.android.synthetic.main.activity_fill_blank.*
 
-class FillBlankActivity: AppCompatActivity() {
+class FillBlankActivity: BaseActivity() {
 
     companion object {
         fun start(context: Context) {

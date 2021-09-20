@@ -7,7 +7,7 @@ import com.k1.k1testlab.page.FloatingViewActivity
 import com.k1.k1testlab.page.LineLayoutTestActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

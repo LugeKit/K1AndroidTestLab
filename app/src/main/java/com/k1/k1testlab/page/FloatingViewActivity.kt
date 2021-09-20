@@ -7,10 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.k1.common.widget.floatingview.FloatingView
 import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.RIGHT_TOP
+import com.k1.k1testlab.BaseActivity
 import com.k1.k1testlab.R
 import kotlinx.android.synthetic.main.activity_floating_view.*
 
-class FloatingViewActivity : AppCompatActivity() {
+class FloatingViewActivity : BaseActivity() {
     companion object {
         fun start(context: Context) {
             val intent = Intent(context, FloatingViewActivity::class.java)
@@ -40,8 +41,7 @@ class FloatingViewActivity : AppCompatActivity() {
             highlightView = floating_view_highlight,
             companionItems = listOf(
                 FloatingView.HighlightItem.CompanionItem(companionView, FloatingView.HighlightItem.CompanionItem.CompanionPosition(RIGHT_TOP))
-            ),
-            highlighShape = FloatingView.HighlightItem.Shape.Rectangle(area = Rect(300 - location[0], 300 - location[1], 400 - location[0], 400 - location[1]))
+            )
         )
         floatingView.addHighlightItem(highlightItem)
 

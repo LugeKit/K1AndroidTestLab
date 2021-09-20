@@ -4,10 +4,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.k1.k1testlab.BaseActivity
 import com.k1.k1testlab.R
 import kotlinx.android.synthetic.main.activity_line_layout_test.*
 
-class LineLayoutTestActivity : AppCompatActivity() {
+class LineLayoutTestActivity : BaseActivity() {
     companion object {
         fun start(context: Context) {
             val intent = Intent(context, LineLayoutTestActivity::class.java)
