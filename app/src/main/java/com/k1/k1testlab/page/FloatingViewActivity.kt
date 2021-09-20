@@ -2,6 +2,7 @@ package com.k1.k1testlab.page
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.k1.common.widget.floatingview.FloatingView
@@ -33,11 +34,14 @@ class FloatingViewActivity : AppCompatActivity() {
     private fun initViews() {
         floatingView = FloatingView.build(this, floating_view_main)
         val companionView = layoutInflater.inflate(R.layout.item_companion_view, floating_view_main, false)
+        val location = IntArray(2)
+        floating_view_main.getLocationInWindow(location)
         val highlightItem = FloatingView.HighlightItem(
             highlightView = floating_view_highlight,
             companionItems = listOf(
                 FloatingView.HighlightItem.CompanionItem(companionView, FloatingView.HighlightItem.CompanionItem.CompanionPosition(RIGHT_TOP))
-            )
+            ),
+            highlighShape = FloatingView.HighlightItem.Shape.Rectangle(area = Rect(300 - location[0], 300 - location[1], 400 - location[0], 400 - location[1]))
         )
         floatingView.addHighlightItem(highlightItem)
 
@@ -46,7 +50,7 @@ class FloatingViewActivity : AppCompatActivity() {
         }
 
         floatingView.setOnClickListener {
-            floatingView.dismiss()
+            floatingView.removeHighlightItem(highlightItem)
         }
     }
 

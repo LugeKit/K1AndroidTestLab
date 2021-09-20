@@ -34,16 +34,16 @@ class DefaultHighlightDrawer(// region variable
     }
 
     /**
-     * 如果item.targetShape.area指定了范围，则直接返回这个范围
+     * 如果item.highlightShape.area指定了范围，则直接返回这个范围
      * 否则计算item.highlightView相对于window的位置
      */
     private fun getAbsoluteHighlightArea(item: FloatingView.HighlightItem): IntArray {
         val area = IntArray(4) { 0 }
 
         // 指定了绘制范围
-        if (item.targetShape is FloatingView.HighlightItem.Shape.Rectangle
-            && item.targetShape.area != null) {
-            item.targetShape.area.apply {
+        if (item.highlighShape is FloatingView.HighlightItem.Shape.Rectangle
+            && item.highlighShape.area != null) {
+            item.highlighShape.area.apply {
                 area[0] = left
                 area[1] = top
                 area[2] = right
@@ -52,9 +52,9 @@ class DefaultHighlightDrawer(// region variable
             }
         }
 
-        if (item.targetShape is FloatingView.HighlightItem.Shape.Oval
-            && item.targetShape.area != null) {
-            item.targetShape.area.apply {
+        if (item.highlighShape is FloatingView.HighlightItem.Shape.Oval
+            && item.highlighShape.area != null) {
+            item.highlighShape.area.apply {
                 area[0] = left
                 area[1] = top
                 area[2] = right
@@ -66,10 +66,10 @@ class DefaultHighlightDrawer(// region variable
         if (item.highlightView == null) return area
 
         item.highlightView.getLocationInWindow(location)
-        area[0] = location[0] - item.targetShape.paddings.left
-        area[1] = location[1] - item.targetShape.paddings.top
-        area[2] = location[0] + item.highlightView.width + item.targetShape.paddings.right
-        area[3] = location[1] + item.highlightView.height + item.targetShape.paddings.bottom
+        area[0] = location[0] - item.highlighShape.paddings.left
+        area[1] = location[1] - item.highlighShape.paddings.top
+        area[2] = location[0] + item.highlightView.width + item.highlighShape.paddings.right
+        area[3] = location[1] + item.highlightView.height + item.highlighShape.paddings.bottom
 
         return area
     }
@@ -77,7 +77,7 @@ class DefaultHighlightDrawer(// region variable
 
     // region draw
     override fun drawHighlight(canvas: Canvas, item: FloatingView.HighlightItem) {
-        when (item.targetShape) {
+        when (item.highlighShape) {
             is FloatingView.HighlightItem.Shape.Default -> {
                 // Default情况 可以处理Drawable, GradientDrawable(shape in xml), StateDrawable(selector in xml, get current one as GradientDrawable)
                 val background: GradientDrawable? = when (val drawable = item.highlightView?.background) {
@@ -101,7 +101,7 @@ class DefaultHighlightDrawer(// region variable
                 }
             }
             is FloatingView.HighlightItem.Shape.Rectangle -> {
-                drawRectHighlight(canvas, item, item.targetShape.radii)
+                drawRectHighlight(canvas, item, item.highlighShape.radii)
             }
             is FloatingView.HighlightItem.Shape.Oval -> {
                 drawOvalHighlight(canvas, item)
