@@ -32,17 +32,19 @@ class FloatingViewActivity : AppCompatActivity() {
 
     private fun initViews() {
         floatingView = FloatingView.build(this, floating_view_main)
-
-        floatingView.show()
         val companionView = layoutInflater.inflate(R.layout.item_companion_view, floating_view_main, false)
-        val highlightItem1 = FloatingView.HighlightItem(
+        val highlightItem = FloatingView.HighlightItem(
             highlightView = floating_view_highlight,
             companionItems = listOf(
                 FloatingView.HighlightItem.CompanionItem(companionView, FloatingView.HighlightItem.CompanionItem.CompanionPosition(RIGHT_TOP))
             )
         )
-        floatingView.addHighlightItem(highlightItem1)
-        floatingView.addHighlightItem(FloatingView.HighlightItem(highlightView = floating_view_highlight2))
+        floatingView.addHighlightItem(highlightItem)
+
+        floating_view_show_btn.setOnClickListener {
+            floatingView.show()
+        }
+
         floatingView.setOnClickListener {
             floatingView.dismiss()
         }

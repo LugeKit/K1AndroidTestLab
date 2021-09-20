@@ -30,12 +30,6 @@ class FloatingView private constructor(
     // region init
     private val highlightItems = ArrayList<HighlightItem>()
 
-    private val highlightPaint = Paint().apply {
-        isAntiAlias = true
-        color = Color.TRANSPARENT
-        xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
-    }
-
     private val backgroundColor = "#bb000000"
     var highlightDrawer: IHighlightDrawer = DefaultHighlightDrawer(this)
 
