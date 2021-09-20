@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.LEFT_BOTTOM
 import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.LEFT_TOP
 import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.RIGHT_BOTTOM
 import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.RIGHT_TOP
+import kotlin.math.max
 
 class FloatingView private constructor(
     context: Context,
@@ -34,7 +36,7 @@ class FloatingView private constructor(
         xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
     }
 
-    private val backgroundColor = "#FF000000"
+    private val backgroundColor = "#bb000000"
     var highlightDrawer: IHighlightDrawer = DefaultHighlightDrawer(this)
 
     init {
@@ -70,6 +72,26 @@ class FloatingView private constructor(
         isVisible = false
     }
     // endregion public method
+
+    // region measure
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+
+        // 要保证它绘制在其他view之上
+        (parent as? ViewGroup)?.also {
+            var maxZ = 0f
+            for (idx in 0 until it.childCount) {
+                val child = it[idx]
+                if (child != this) {
+                    maxZ = max(maxZ, child.translationZ)
+                }
+            }
+            translationZ = maxZ + 1
+        }
+    }
+
+    // endregion measure
 
     // region layout
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
@@ -108,7 +130,6 @@ class FloatingView private constructor(
             }
         }
     }
-
     // endregion layout
 
     // region draw
