@@ -4,8 +4,11 @@ import android.graphics.*
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.StateListDrawable
 
-class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.IHighlightDrawer {
+class DefaultHighlightDrawer(// region variable
+    private val baseView: FloatingView
+): FloatingView.IHighlightDrawer {
 
+    // region variable
     private val path = Path()
     private val rect = Rect()
     private val rectF = RectF()
@@ -15,8 +18,9 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
         color = Color.TRANSPARENT
         xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
     }
+    // endregion variable
 
-    // region Get highlight area
+    // region get highlight area
     override fun getRelativeHighlightArea(item: FloatingView.HighlightItem): IntArray {
         val area = getAbsoluteHighlightArea(item)
 
@@ -29,8 +33,36 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
         return area
     }
 
+    /**
+     * 如果item.targetShape.area指定了范围，则直接返回这个范围
+     * 否则计算item.highlightView相对于window的位置
+     */
     private fun getAbsoluteHighlightArea(item: FloatingView.HighlightItem): IntArray {
         val area = IntArray(4) { 0 }
+
+        // 指定了绘制范围
+        if (item.targetShape is FloatingView.HighlightItem.Shape.Rectangle
+            && item.targetShape.area != null) {
+            item.targetShape.area.apply {
+                area[0] = left
+                area[1] = top
+                area[2] = right
+                area[3] = bottom
+                return area
+            }
+        }
+
+        if (item.targetShape is FloatingView.HighlightItem.Shape.Oval
+            && item.targetShape.area != null) {
+            item.targetShape.area.apply {
+                area[0] = left
+                area[1] = top
+                area[2] = right
+                area[3] = bottom
+                return area
+            }
+        }
+
         if (item.highlightView == null) return area
 
         item.highlightView.getLocationInWindow(location)
@@ -43,14 +75,12 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
     }
     // endregion Get highlight area
 
+    // region draw
     override fun drawHighlight(canvas: Canvas, item: FloatingView.HighlightItem) {
-        if (item.highlightView == null) return
-
         when (item.targetShape) {
             is FloatingView.HighlightItem.Shape.Default -> {
                 // Default情况 可以处理Drawable, GradientDrawable(shape in xml), StateDrawable(selector in xml, get current one as GradientDrawable)
-
-                val background: GradientDrawable? = when (val drawable = item.highlightView.background) {
+                val background: GradientDrawable? = when (val drawable = item.highlightView?.background) {
                     is GradientDrawable -> { drawable }
                     is StateListDrawable -> { drawable.current as? GradientDrawable }
                     else -> null
@@ -84,8 +114,6 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
      * @param radii FloatArray(8) topLeft, topRight, bottomRight, bottomLeft. Each takes two: px, py
      */
     private fun drawRectHighlight(canvas: Canvas, item: FloatingView.HighlightItem, radii: FloatArray? = null) {
-        if (item.highlightView == null) return
-
         getRelativeHighlightArea(item).apply {
             rect.set(get(0), get(1), get(2), get(3))
         }
@@ -104,8 +132,6 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
      * 画椭圆形
      */
     private fun drawOvalHighlight(canvas: Canvas, item: FloatingView.HighlightItem) {
-        if (item.highlightView == null) return
-
         getRelativeHighlightArea(item).apply {
             rect.set(get(0), get(1), get(2), get(3))
         }
@@ -113,7 +139,9 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
         rectF.set(rect)
         canvas.drawOval(rectF, highlightPaint)
     }
+    // endregion draw
 
+    // region draw helper
     /**
      * 获取drawable的shape信息
      */
@@ -156,4 +184,5 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
 
         return null
     }
+    // endregion draw helper
 }
