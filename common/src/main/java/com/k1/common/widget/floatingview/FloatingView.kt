@@ -1,27 +1,32 @@
 package com.k1.common.widget.floatingview
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.*
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import androidx.core.view.get
 import androidx.core.view.isVisible
 import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.LEFT_BOTTOM
 import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.LEFT_TOP
 import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.RIGHT_BOTTOM
 import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.RIGHT_TOP
-import kotlin.math.max
 
+/**
+ * 一个蒙层View, 会被添加到DecorView中
+ * 利用属性z来控制遮盖, 当发现不能完全盖住当前视图下的内容时, 请尝试通过setZ()增大z值, 默认为1000f
+ * build后请在相关Activity/Fragment生命周期的末期调用remove()方法
+ */
 class FloatingView private constructor(
     context: Context,
 ): FrameLayout(context) {
 
     companion object {
-        fun build(context: Context, parentView: ViewGroup): FloatingView {
-            return FloatingView(context).apply {
-                parentView.addView(this)
+        fun build(activity: Activity): FloatingView {
+            return FloatingView(activity).apply {
+                val decorView = activity.window.decorView
+                (decorView as? ViewGroup)?.addView(this)
             }
         }
     }
@@ -30,12 +35,18 @@ class FloatingView private constructor(
     private val highlightItems = ArrayList<HighlightItem>()
 
     private var backgroundColor = "#bb000000"
+
     var highlightDrawer: IHighlightDrawer = DefaultHighlightDrawer(this)
 
     init {
         layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
         setWillNotDraw(false) // 默认是true
         isVisible = false
+
+        /**
+         * 如果被某些view盖住，构建后调用setZ方法调大FloatingView的高度即可
+         */
+        z = 1000f
     }
     // endregion init
 
@@ -79,28 +90,14 @@ class FloatingView private constructor(
         isVisible = false
     }
 
+    fun remove() {
+        (parent as? ViewGroup)?.removeView(this)
+    }
+
     fun setBaseColor(colorString: String) {
         backgroundColor = colorString
     }
     // endregion public method
-
-    // region measure
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-
-        // 要保证它绘制在其他view之上
-        (parent as? ViewGroup)?.also {
-            var maxZ = 0f
-            for (idx in 0 until it.childCount) {
-                val child = it[idx]
-                if (child != this) {
-                    maxZ = max(maxZ, child.z)
-                }
-            }
-            z = maxZ + 1f
-        }
-    }
-    // endregion measure
 
     // region layout
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {

@@ -2,8 +2,6 @@ package com.k1.k1testlab.page
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Rect
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.k1.common.widget.floatingview.FloatingView
 import com.k1.common.widget.floatingview.FloatingView.HighlightItem.CompanionItem.CompanionPosition.Companion.RIGHT_TOP
@@ -32,8 +30,13 @@ class FloatingViewActivity : BaseActivity() {
         initViews()
     }
 
+    override fun onStop() {
+        super.onStop()
+        floatingView.remove()
+    }
+
     private fun initViews() {
-        floatingView = FloatingView.build(this, floating_view_main)
+        floatingView = FloatingView.build(this)
         val companionView = layoutInflater.inflate(R.layout.item_companion_view, floating_view_main, false)
         val location = IntArray(2)
         floating_view_main.getLocationInWindow(location)
