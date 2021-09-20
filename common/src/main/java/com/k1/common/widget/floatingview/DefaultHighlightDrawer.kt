@@ -2,9 +2,7 @@ package com.k1.common.widget.floatingview
 
 import android.graphics.*
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.StateListDrawable
-import android.view.View
 
 class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.IHighlightDrawer {
 
@@ -18,17 +16,9 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
         xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC)
     }
 
-    override fun getHighlightArea(item: FloatingView.HighlightItem): IntArray {
-        val area = IntArray(4) { 0 }
-
-        if (item.highlightView == null) return area
-
-        item.highlightView.getLocationInWindow(location)
-        item.highlightView.getDrawingRect(rect)
-        area[0] = location[0] - item.targetShape.paddings.left
-        area[1] = location[1] - item.targetShape.paddings.top
-        area[2] = location[0] + rect.right + item.targetShape.paddings.right
-        area[3] = location[1] + rect.bottom + item.targetShape.paddings.bottom
+    // region Get highlight area
+    override fun getRelativeHighlightArea(item: FloatingView.HighlightItem): IntArray {
+        val area = getAbsoluteHighlightArea(item)
 
         baseView.getLocationInWindow(location)
         area[0] -= location[0]
@@ -38,6 +28,20 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
 
         return area
     }
+
+    private fun getAbsoluteHighlightArea(item: FloatingView.HighlightItem): IntArray {
+        val area = IntArray(4) { 0 }
+        if (item.highlightView == null) return area
+
+        item.highlightView.getLocationInWindow(location)
+        area[0] = location[0] - item.targetShape.paddings.left
+        area[1] = location[1] - item.targetShape.paddings.top
+        area[2] = location[0] + item.highlightView.width + item.targetShape.paddings.right
+        area[3] = location[1] + item.highlightView.height + item.targetShape.paddings.bottom
+
+        return area
+    }
+    // endregion Get highlight area
 
     override fun drawHighlight(canvas: Canvas, item: FloatingView.HighlightItem) {
         if (item.highlightView == null) return
@@ -82,7 +86,7 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
     private fun drawRectHighlight(canvas: Canvas, item: FloatingView.HighlightItem, radii: FloatArray? = null) {
         if (item.highlightView == null) return
 
-        getHighlightArea(item).apply {
+        getRelativeHighlightArea(item).apply {
             rect.set(get(0), get(1), get(2), get(3))
         }
 
@@ -102,7 +106,7 @@ class DefaultHighlightDrawer(private val baseView: FloatingView): FloatingView.I
     private fun drawOvalHighlight(canvas: Canvas, item: FloatingView.HighlightItem) {
         if (item.highlightView == null) return
 
-        getHighlightArea(item).apply {
+        getRelativeHighlightArea(item).apply {
             rect.set(get(0), get(1), get(2), get(3))
         }
 

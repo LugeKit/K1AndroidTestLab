@@ -2,7 +2,6 @@ package com.k1.common.widget.floatingview
 
 import android.content.Context
 import android.graphics.*
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -90,7 +89,7 @@ class FloatingView private constructor(
     // region layout
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         for (item in highlightItems) {
-            val area = highlightDrawer.getHighlightArea(item)
+            val area = highlightDrawer.getRelativeHighlightArea(item)
             for (companionItem in item.companionItems) {
                 val cView = companionItem.view
                 if (cView.parent != this) continue // 没add进去 理论上需要throw
@@ -206,7 +205,7 @@ class FloatingView private constructor(
          * 获取高亮view的高亮范围，返回的是相对于FloatingView的位置，计算了padding后的值
          * @return An IntArray(4) to describe the bounds of highlight view. 0->left, 1->top, 2->right, 3->bottom
          */
-        fun getHighlightArea(item: HighlightItem): IntArray
+        fun getRelativeHighlightArea(item: HighlightItem): IntArray
 
         /**
          * 绘制高亮区域的规则，实现参考DefaultHighlightDrawer
