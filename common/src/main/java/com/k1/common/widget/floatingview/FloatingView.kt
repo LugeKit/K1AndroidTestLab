@@ -29,7 +29,7 @@ class FloatingView private constructor(
     // region init
     private val highlightItems = ArrayList<HighlightItem>()
 
-    private val backgroundColor = "#bb000000"
+    private var backgroundColor = "#bb000000"
     var highlightDrawer: IHighlightDrawer = DefaultHighlightDrawer(this)
 
     init {
@@ -41,7 +41,7 @@ class FloatingView private constructor(
 
     // region public method
     /**
-     * 添加高亮的view
+     * 添加高亮区域
      */
     fun addHighlightItem(item: HighlightItem) {
         highlightItems.add(item)
@@ -51,6 +51,20 @@ class FloatingView private constructor(
         postInvalidate()
     }
 
+    /**
+     * 移除高亮区域和伴随view
+     */
+    fun removeHighlightItem(item: HighlightItem) {
+        highlightItems.remove(item)
+        for (companionItem in item.companionItems) {
+            removeView(companionItem.view)
+        }
+        postInvalidate()
+    }
+
+    /**
+     * 清除高亮区域
+     */
     fun clear() {
         highlightItems.clear()
         removeAllViews()
@@ -64,10 +78,13 @@ class FloatingView private constructor(
     fun dismiss() {
         isVisible = false
     }
+
+    fun setBaseColor(colorString: String) {
+        backgroundColor = colorString
+    }
     // endregion public method
 
     // region measure
-
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
@@ -83,7 +100,6 @@ class FloatingView private constructor(
             translationZ = maxZ + 1
         }
     }
-
     // endregion measure
 
     // region layout
@@ -144,7 +160,7 @@ class FloatingView private constructor(
 
     // region relative class
     /**
-     * @param highlightView 需要被高亮的view
+     * @param highlightView 需要被高亮的view, 可以为null, 为null时请指定targetShape && targetShape.area
      * @param targetShape 想要绘制的高亮形状，默认为Default，即根据highlightView的background绘制，可以设置该参数的paddings值，从而更改高亮的区域(添加高亮padding)
      * @param companionItems 一个列表，包含了附着在高亮view上的其他view的信息，绘制在蒙层上(例如指引图)
      */
@@ -155,8 +171,12 @@ class FloatingView private constructor(
     ) {
         sealed class Shape(val paddings: Paddings) {
             class Default(paddings: Paddings = Paddings()): Shape(paddings)
-            class Rectangle(paddings: Paddings = Paddings(), val radii: FloatArray = FloatArray(8) { 0f }): Shape(paddings)
-            class Oval(paddings: Paddings = Paddings()): Shape(paddings)
+
+            /**
+             * @param area view相对于window的绝对位置, 如果area不为null, 绘制的高亮区域就是area指定的区域, 注意此时paddings无效
+             */
+            class Rectangle(paddings: Paddings = Paddings(), val radii: FloatArray = FloatArray(8) { 0f }, val area: Rect? = null): Shape(paddings)
+            class Oval(paddings: Paddings = Paddings(), val area: Rect? = null): Shape(paddings)
 
             fun setPaddings(l: Int = 0, t: Int = 0, r: Int = 0, b: Int = 0) {
                 paddings.apply {
