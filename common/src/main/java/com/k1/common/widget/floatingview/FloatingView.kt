@@ -158,12 +158,12 @@ class FloatingView private constructor(
     // region relative class
     /**
      * @param highlightView 需要被高亮的view, 可以为null, 为null时请指定highlightShape && highlightShape.area, 指定了highlightShape.area时，本属性无效
-     * @param highlighShape 想要绘制的高亮形状，默认为Default，即根据highlightView的background绘制，可以设置该参数的paddings值，从而更改高亮的区域(添加高亮padding)
+     * @param highlightShape 想要绘制的高亮形状，默认为Default，即根据highlightView的background绘制，可以设置该参数的paddings值，从而更改高亮的区域(添加高亮padding)
      * @param companionItems 一个列表，包含了附着在高亮view上的其他view的信息，绘制在蒙层上(例如指引图)
      */
     class HighlightItem(
         val highlightView: View? = null,
-        val highlighShape: Shape = Shape.Default(),
+        val highlightShape: Shape = Shape.Default(),
         val companionItems: List<CompanionItem> = arrayListOf(),
     ) {
         sealed class Shape(val paddings: Paddings) {
