@@ -8,7 +8,7 @@
 
     <com.k1.common.widget.LineLayout
         android:id="@+id/line_layout_line_layout_container"
-        android:orientation="horizontal"
+        app:orientation="horizontal"
         app:lineItemPadding="12dp"
         app:linePadding="12dp"
         android:paddingHorizontal="12dp"
