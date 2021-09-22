@@ -90,6 +90,9 @@ class FloatingView private constructor(
         isVisible = false
     }
 
+    /**
+     * 在不需要蒙层时或生命周期结束时应主动调用该方法移除FloatingView
+     */
     fun remove() {
         (parent as? ViewGroup)?.removeView(this)
     }
