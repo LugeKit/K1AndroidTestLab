@@ -65,15 +65,14 @@ class LineLayout @JvmOverloads constructor(
 
         layoutPosList.clear()
 
-        var currLeft = paddingLeft
-        var currTop = paddingTop
-        var lineSpaceCost = 0
+        var currLeft = paddingLeft  // 当前需要放置的view的左侧起点
+        var currTop = paddingTop    // 当前需要放置的view的顶部起点
+        var lineSpaceCost = 0   // 当前行占用的最高高度
+        var childTotalWidth = 0 // 所有子view的宽度总和，当子view加起来没有超过最大宽度时，这个就是WRAP_CONTENT情况下设置的自身的宽度
 
-        var childTotalWidth = 0
-
+        measureChildren(widthMeasureSpec, heightMeasureSpec)
         for (idx in 0 until childCount) {
             val child = getChildAt(idx)
-            measureChildHorizontal(widthMeasureSpec, heightMeasureSpec, currLeft, child)
 
             val childWidth = child.measuredWidth + child.marginHorizontal
             val childHeight = child.measuredHeight + child.marginVertical
@@ -81,13 +80,12 @@ class LineLayout @JvmOverloads constructor(
             if (widthMode != MeasureSpec.UNSPECIFIED
                 && currLeft + childWidth + paddingRight > widthSize
                 && currLeft != paddingLeft) {
-                // 这行放不下了 换行再测一次
+                // 这行放不下了，换行，如果换行宽度也超出了自身宽度，就直接放
                 // currLeft != paddingLeft 说明不是这行第一个
 
                 currLeft = paddingLeft
                 currTop += lineSpaceCost + linePadding.toInt()
                 lineSpaceCost = 0
-                measureChildHorizontal(widthMeasureSpec, heightMeasureSpec, currLeft, child)
             }
 
             childTotalWidth += childWidth

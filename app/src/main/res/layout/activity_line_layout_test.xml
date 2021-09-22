@@ -20,12 +20,14 @@
             android:layout_width="300dp"
             android:layout_height="200dp"
             android:background="@color/black" />
-        <View
-            android:layout_width="20dp"
-            android:layout_height="50dp"
+        <TextView
+            android:text="这是一段测试文本"
+            android:maxLines="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@color/purple_200" />
         <View
-            android:layout_width="50dp"
+            android:layout_width="400dp"
             android:layout_height="300dp"
             android:background="@color/teal_200" />
     </com.k1.common.widget.LineLayout>
