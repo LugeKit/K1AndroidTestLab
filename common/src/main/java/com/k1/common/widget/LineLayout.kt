@@ -129,29 +129,6 @@ class LineLayout @JvmOverloads constructor(
 
     }
 
-    private fun measureChildHorizontal(
-        widthMeasureSpec: Int,
-        heightMeasureSpec: Int,
-        currLeft: Int,
-        child: View
-    ) {
-        val widthSize = widthMeasureSpec.getSize()
-        val childWidthMeasureSpec = when (val widthMode = widthMeasureSpec.getMode()) {
-            MeasureSpec.EXACTLY, MeasureSpec.AT_MOST -> {
-                // 这里不需要关心padding，因为在measureChild中设置的child的空间会将父布局的padding减掉
-                val canUseSpace = widthSize - (currLeft - paddingLeft)
-                MeasureSpec.makeMeasureSpec(canUseSpace, widthMode)
-            }
-            else -> {
-                // UNSPECIFIED
-                widthMeasureSpec
-            }
-        }
-        // 这里调用measureChild 会将子View的布局模式(WRAP_CONTENT/MATCH_PARENT/EXACTLY)与父View的布局模式进行一个对比，根据尺寸设置子View的布局模式
-        // 具体见源码
-        measureChild(child, childWidthMeasureSpec, heightMeasureSpec)
-    }
-
     private fun measureVertical(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val widthSize = widthMeasureSpec.getSize()
         val widthMode = widthMeasureSpec.getMode()
@@ -163,12 +140,11 @@ class LineLayout @JvmOverloads constructor(
         var currLeft = paddingLeft
         var currTop = paddingTop
         var lineSpaceCost = 0
-
         var childTotalHeight = 0
 
+        measureChildren(widthMeasureSpec, heightMeasureSpec)
         for (idx in 0 until childCount) {
             val child = getChildAt(idx)
-            measureChildVertical(widthMeasureSpec, heightMeasureSpec, currTop, child)
 
             val childWidth = child.measuredWidth + child.marginHorizontal
             val childHeight = child.measuredHeight + child.marginVertical
@@ -180,7 +156,6 @@ class LineLayout @JvmOverloads constructor(
                 currTop = paddingTop
                 currLeft += lineSpaceCost + linePadding.toInt()
                 lineSpaceCost = 0
-                measureChildVertical(widthMeasureSpec, heightMeasureSpec, currTop, child)
             }
 
             childTotalHeight += childHeight
@@ -217,26 +192,6 @@ class LineLayout @JvmOverloads constructor(
         }
 
         setMeasuredDimension(retWidth, retHeight)
-    }
-
-    private fun measureChildVertical(
-        widthMeasureSpec: Int,
-        heightMeasureSpec: Int,
-        currTop: Int,
-        child: View
-    ) {
-        val heightSize = heightMeasureSpec.getSize()
-        val childHeightMeasureSpec = when (val heightMode = heightMeasureSpec.getMode()) {
-            MeasureSpec.AT_MOST, MeasureSpec.EXACTLY -> {
-                val canUseSpace = heightSize - (currTop - paddingTop)
-                MeasureSpec.makeMeasureSpec(canUseSpace, heightMode)
-            }
-            else -> {
-                // UNSPECIFIED
-                heightMeasureSpec
-            }
-        }
-        measureChild(child, widthMeasureSpec, childHeightMeasureSpec)
     }
 
     private fun layoutChild(
